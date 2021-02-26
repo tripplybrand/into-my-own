@@ -23,9 +23,9 @@ module.exports = {
         '"Segoe UI Symbol"',
         '"Noto Color Emoji"',
       ],
-      // Note, Work Sans must be quoted per the docs: https://tailwindcss.com/docs/font-family/#font-families
+      // Note, Proza Libre must be quoted per the docs: https://tailwindcss.com/docs/font-family/#font-families
       body: [
-        '"Work Sans"',
+        '"Proza Libre"',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',

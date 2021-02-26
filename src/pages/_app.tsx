@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import { GlobalStyles } from 'twin.macro'
 import '../styles/globals.css'
+import '../styles/scrollStyles.css'
 
 type ComponentWithPageLayout = {
   Component: AppProps['Component'] & {

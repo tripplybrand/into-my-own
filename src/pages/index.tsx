@@ -1,185 +1,284 @@
 import tw, { css } from 'twin.macro'
 import Head from 'next/head'
-import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createMachine, assign } from 'xstate'
+import { useMachine } from '@xstate/react'
 
 export default function Home() {
-  const [showSidebar, setShowSidebar] = useState(false)
+  const currentLineNumber = useCurrentLineNumber()
 
   return (
-    <div tw="flex flex-col h-screen bg-gray-yellow-100">
+    <>
       <Head>
-        <title>Layout examples</title>
+        <title>Into My Own</title>
       </Head>
-
-      <Header>
-        <button
-          onClick={() => setShowSidebar((prev) => !prev)}
-          aria-label={showSidebar ? 'Close sidebar' : 'Open sidebar'}
-          css={[
-            tw`w-6 h-8 ml-2 text-2xl text-gray-yellow-100 font-icon`,
-            css`
-              font-variation-settings: 'TIME' 1;
-              transition: font-variation-settings 0.4s ease;
-            `,
-            showSidebar
-              ? css`
-                  font-variation-settings: 'TIME' 100;
-                `
-              : null,
-          ]}
+      <div
+        id="textContainer"
+        style={{ display: 'flex', justifyContent: 'center', height: '150vh' }}
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '4rem',
+            left: '50%',
+            transform: 'translate(-50%)',
+            whiteSpace: 'nowrap',
+            height: '150vh',
+            zIndex: 1,
+          }}
         >
-          A
-        </button>
-        <Link href="/" passHref>
-          <a tw="ml-2 text-2xl font-bold font-display text-gray-yellow-100">
-            Home
-          </a>
-        </Link>
-        {/* TODO: add avatar */}
-      </Header>
-
-      <div tw="flex flex-row flex-1 overflow-hidden">
-        <Sidebar showSidebar={showSidebar}>
-          <div tw="pt-2 pl-4 space-y-8 text-gray-yellow-300 bl-text-xl">
-            {Array.from({ length: 20 }).map((_, idx) => (
-              <p key={idx}>Sidebar content</p>
-            ))}
-          </div>
-        </Sidebar>
-        <Main>
-          <article>
-            <section tw="pt-2 pl-4 space-y-8 text-gray-yellow-600 bl-text-lg">
-              {Array.from({ length: 20 }).map((_, idx) => (
-                <p key={idx}>Content</p>
-              ))}
-            </section>
-          </article>
-          <Footer tw="text-gray-yellow-600 bl-text-base">
-            Hi, I'm the footer
-          </Footer>
-        </Main>
+          <h1
+            id="title"
+            style={{ animation: 'from-on-to-past 3s forwards ease-out' }}
+            tw="font-body"
+          >
+            Into My Own
+          </h1>
+          {stanzas.map((lines, stansaIdx) => {
+            const previousStanzas = stanzas.slice(0, stansaIdx)
+            const previousLineNum = previousStanzas.reduce(
+              (totalLines, linesInStanza) => totalLines + linesInStanza.length,
+              0
+            )
+            return (
+              <Paragraph key={stansaIdx}>
+                {lines.map((line, lineIdx) => {
+                  const lineNumber = previousLineNum + lineIdx
+                  // events: 'SCROLL_ON' | 'SCROLL_PAST' | 'SCROLL_BEFORE'
+                  const animationEvent =
+                    currentLineNumber === lineNumber
+                      ? 'SCROLL_ON'
+                      : currentLineNumber > lineNumber
+                      ? 'SCROLL_PAST'
+                      : currentLineNumber < lineNumber
+                      ? 'SCROLL_BEFORE'
+                      : null
+                  return (
+                    <Line
+                      key={line}
+                      animationEvent={animationEvent}
+                      lastLine={lineNumber === lastLineNumber}
+                    >
+                      {line}
+                    </Line>
+                  )
+                })}
+                {/* add the attribution to the end of the last stanza */}
+                {stansaIdx === stanzas.length - 1 ? (
+                  <Attribution
+                    animationEvent={
+                      currentLineNumber === lastLineNumber
+                        ? 'SCROLL_ON'
+                        : 'SCROLL_BEFORE'
+                    }
+                  >
+                    — Robert Frost
+                  </Attribution>
+                ) : null}
+              </Paragraph>
+            )
+          })}
+        </div>
       </div>
-    </div>
+      <div id="scrollBox">
+        <p>{null}</p>
+      </div>
+    </>
   )
 }
 
-type HeaderProps = {
-  className?: string
-  children?: React.ReactNode
-}
-function Header({ className, children }: HeaderProps) {
-  return (
-    <header
-      tw="w-full h-12 flex flex-row items-center bg-gray-yellow-500"
-      className={className}
-    >
-      {children}
-    </header>
-  )
+// Components
+
+function Paragraph({ children }) {
+  return <p tw="my-4">{children}</p>
 }
 
-// taken from https://heroicons.com/
-function HamburgerIcon(props: React.SVGAttributes<SVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      tw="w-6 h-6 text-gray-yellow-100"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 12h16M4 18h16"
-      />
-    </svg>
-  )
-}
-function CloseIcon(props: React.SVGAttributes<SVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      tw="w-6 h-6 text-gray-yellow-100"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  )
-}
-
-type MainProps = {
-  className?: string
-  children?: React.ReactNode
-}
-function Main({ className, children }: MainProps) {
-  return (
-    <main tw="flex-1 overflow-x-hidden overflow-y-auto" className={className}>
-      {children}
-    </main>
-  )
-}
-
-type SidebarProps = {
-  showSidebar: boolean
-  className?: string
-  children?: React.ReactNode
-}
-type AnimationStatus = 'closing' | 'closed' | 'open'
-function Sidebar({ showSidebar, className, children }: SidebarProps) {
-  const previousShowSidebar = useRef(showSidebar)
-  const [animationStatus, setAnimationStatus] = useState<AnimationStatus>(() =>
-    showSidebar ? 'open' : 'closed'
+// 'SCROLL_ON' | 'SCROLL_PAST' | 'SCROLL_BEFORE'
+function Line({ children, animationEvent, lastLine }) {
+  const [state, send] = useMachine(
+    animationMachine,
+    lastLine
+      ? {
+          actions: {
+            fromBeforeToOn: assign({
+              animation:
+                'from-before-to-on 1s forwards ease-out, from-on-to-past 1s 1.3s forwards ease-out',
+            }),
+          },
+        }
+      : {}
   )
 
   useEffect(() => {
-    if (!previousShowSidebar.current && showSidebar) {
-      setAnimationStatus('open')
-    }
-    if (previousShowSidebar.current && !showSidebar) {
-      setAnimationStatus('closing')
-    }
-
-    previousShowSidebar.current = showSidebar
-  }, [showSidebar])
+    send(animationEvent)
+  }, [send, animationEvent])
 
   return (
-    <aside
-      css={[
-        tw`static inset-y-0 left-0 w-64 h-screen overflow-y-auto bg-gray-yellow-600`,
-        showSidebar ? tw`ml-0` : tw`-ml-64`,
-        animationStatus === 'closed' ? tw`invisible` : tw`visible`,
-        css`
-          transition: margin-left 0.5s ease-in-out;
-        `,
-      ]}
-      className={className}
-      onTransitionEnd={() => {
-        if (animationStatus === 'closing') {
-          setAnimationStatus('closed')
-        }
-      }}
+    <span
+      className="appear"
+      style={{ animation: state.context.animation }}
+      tw="font-body"
     >
-      {animationStatus === 'closed' ? null : children}
-    </aside>
+      {children}
+    </span>
   )
 }
 
-type FooterProps = {
-  className?: string
-  children?: React.ReactNode
+function Attribution({ children, animationEvent }) {
+  const [state, send] = useMachine(animationMachine, {
+    actions: {
+      fromBeforeToOn: assign({
+        animation: `attribution-in 2s 0.5s forwards ease-out`,
+      }),
+      fromOnToBefore: assign({
+        animation: `attribution-out 1s forwards ease-out`,
+      }),
+    },
+  })
+
+  useEffect(() => {
+    send(animationEvent)
+  }, [send, animationEvent])
+
+  return (
+    <span
+      id="attribution"
+      style={{ animation: state.context.animation }}
+      tw="font-body"
+    >
+      {children}
+    </span>
+  )
 }
-function Footer({ className, children }: FooterProps) {
-  return <footer className={className}>{children}</footer>
+
+// Data
+
+const stanzas = [
+  [
+    'One of my wishes is that those dark trees,',
+    'So old and firm they scarcely show the breeze,',
+    'Were not, as ’twere, the merest mask of gloom,',
+    'But stretched away unto the edge of doom.',
+  ],
+  [
+    'I should not be withheld but that some day',
+    'Into their vastness I should steal away,',
+    'Fearless of ever finding open land,',
+    'Or highway where the slow wheel pours the sand.',
+  ],
+  [
+    'I do not see why I should e’er turn back,',
+    'Or those should not set forth upon my track',
+    'To overtake me, who should miss me here',
+    'And long to know if still I held them dear.',
+  ],
+  [
+    'They would not find me changed from him they knew',
+    'Only more sure of all I thought was true.',
+  ],
+]
+
+const lastLineNumber = stanzas.flat().length - 1
+
+// Hooks/logic
+
+const options = {
+  threshold: [
+    0.0667,
+    0.1334,
+    0.2001,
+    0.2668,
+    0.33349999999999996,
+    0.4002,
+    0.4669,
+    0.5336,
+    0.6003,
+    0.6669999999999999,
+    0.7336999999999999,
+    0.8004,
+    0.8671,
+    0.9338,
+  ],
 }
+
+function useCurrentLineNumber() {
+  const [currentLineNumber, setCurrentLineNumber] = useState(-1)
+  useEffect(() => {
+    const scrollBox = document.querySelector('#scrollBox')
+
+    const observer = new IntersectionObserver(handleIntersect, options)
+    observer.observe(scrollBox)
+
+    function handleIntersect(entry, observer) {
+      const currentRatio = entry[0].intersectionRatio
+
+      const thresholdIdx = options.threshold.findIndex(
+        (threshold) => currentRatio <= threshold
+      )
+      const currentLineNumber =
+        thresholdIdx === -1 ? lastLineNumber : thresholdIdx - 1
+
+      setCurrentLineNumber(currentLineNumber)
+    }
+  }, [])
+
+  return currentLineNumber
+}
+
+const animationMachine = createMachine(
+  {
+    context: {
+      animation: '',
+    },
+    initial: 'beforeLine',
+    states: {
+      beforeLine: {
+        on: {
+          SCROLL_ON: {
+            target: 'onLine',
+            actions: 'fromBeforeToOn',
+          },
+          SCROLL_BEFORE: {},
+        },
+      },
+      onLine: {
+        on: {},
+      },
+      pastLine: {
+        on: {
+          SCROLL_ON: {
+            target: 'onLine',
+            actions: 'fromPastToOn',
+          },
+          SCROLL_PAST: {},
+        },
+      },
+    },
+    on: {
+      SCROLL_PAST: {
+        target: 'pastLine',
+        actions: 'fromOnToPast',
+      },
+      SCROLL_BEFORE: {
+        target: 'beforeLine',
+        actions: 'fromOnToBefore',
+      },
+    },
+  },
+  {
+    actions: {
+      fromBeforeToOn: assign({
+        animation: 'from-before-to-on 1s forwards ease-out',
+      }),
+      fromOnToPast: assign({
+        animation: 'from-on-to-past 1s forwards ease-out',
+      }),
+      fromOnToBefore: assign({
+        animation: 'from-on-to-before 1s forwards ease-out',
+      }),
+      fromPastToOn: assign({
+        animation: 'from-past-to-on 1s forwards ease-out',
+      }),
+    },
+  }
+)
