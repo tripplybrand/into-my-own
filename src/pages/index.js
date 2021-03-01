@@ -103,7 +103,7 @@ function Line({ children, animationEvent, lastLine }) {
           actions: {
             fromBeforeToOn: assign({
               animation:
-                'from-before-to-on 1s forwards ease-out, from-on-to-past 1s 1.3s forwards ease-out',
+                'from-before-to-on 1s forwards ease-out, from-on-to-past 1s 1s forwards ease-out',
             }),
           },
         }
