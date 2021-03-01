@@ -14,23 +14,24 @@ export default function Home() {
       </Head>
       <div
         id="textContainer"
-        style={{ display: 'flex', justifyContent: 'center', height: '150vh' }}
+        tw="flex justify-center h-screen min-h-screen my-0 mx-auto"
       >
         <div
-          style={{
-            position: 'fixed',
-            top: '4rem',
-            left: '50%',
-            transform: 'translate(-50%)',
-            whiteSpace: 'nowrap',
-            height: '150vh',
-            zIndex: 1,
-          }}
+          css={[
+            tw`fixed top-16 left-2/4 whitespace-nowrap h-screen z-10`,
+            css`
+              transform: translate(-50%);
+            `,
+          ]}
         >
           <h1
-            id="title"
-            style={{ animation: 'from-on-to-past 3s forwards ease-out' }}
-            tw="font-body"
+            css={[
+              tw`font-body font-bold`,
+              css`
+                animation: from-on-to-past 3s forwards ease-out;
+                font-size: 2.5rem;
+              `,
+            ]}
           >
             Into My Own
           </h1>
@@ -80,7 +81,7 @@ export default function Home() {
           })}
         </div>
       </div>
-      <div id="scrollBox">
+      <div id="scrollBox" tw="min-h-screen bg-gray-300 bg-opacity-0	">
         <p>{null}</p>
       </div>
     </>
@@ -116,8 +117,14 @@ function Line({ children, animationEvent, lastLine }) {
   return (
     <span
       className="appear"
-      style={{ animation: state.context.animation }}
-      tw="font-body"
+      css={[
+        tw`font-body block font-normal opacity-0`,
+        css`
+          animation: ${state.context.animation};
+          font-size: 1.2rem;
+          color: #ff90d6;
+        `,
+      ]}
     >
       {children}
     </span>
@@ -128,7 +135,7 @@ function Attribution({ children, animationEvent }) {
   const [state, send] = useMachine(animationMachine, {
     actions: {
       fromBeforeToOn: assign({
-        animation: `attribution-in 2s 0.5s forwards ease-out`,
+        animation: `attribution-in 1s 0.5s forwards ease-out`,
       }),
       fromOnToBefore: assign({
         animation: `attribution-out 1s forwards ease-out`,
@@ -143,8 +150,14 @@ function Attribution({ children, animationEvent }) {
   return (
     <span
       id="attribution"
-      style={{ animation: state.context.animation }}
-      tw="font-body"
+      css={[
+        tw`font-body block font-normal text-right opacity-0`,
+        css`
+          animation: ${state.context.animation};
+          font-size: 0.9rem;
+          color: #ff90d6;
+        `,
+      ]}
     >
       {children}
     </span>
