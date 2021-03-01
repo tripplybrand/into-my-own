@@ -14,11 +14,16 @@ export default function Home() {
       </Head>
       <div
         id="textContainer"
-        tw="flex justify-center h-screen min-h-screen my-0 mx-auto"
+        css={[
+          tw`flex justify-center min-h-screen my-0 mx-auto`,
+          css`
+            height: 100vh;
+          `,
+        ]}
       >
         <div
           css={[
-            tw`fixed top-16 left-2/4 whitespace-nowrap h-screen z-10`,
+            tw`fixed top-16 left-2/4 whitespace-nowrap h-screen`,
             css`
               transform: translate(-50%);
             `,
@@ -81,8 +86,26 @@ export default function Home() {
           })}
         </div>
       </div>
-      <div id="scrollBox" tw="min-h-screen bg-gray-300 bg-opacity-0	">
-        <p>{null}</p>
+      <div
+        id="scrollRoot"
+        css={[
+          tw`min-h-screen bg-red-300`,
+          css`
+            height: 150vh;
+          `,
+        ]}
+      >
+        <div
+          id="scrollBox"
+          css={[
+            tw`min-h-screen bg-gray-300 bg-opacity-100 top-16 w-1/2`,
+            css`
+              height: 100vh;
+            `,
+          ]}
+        >
+          <p>{null}</p>
+        </div>
       </div>
     </>
   )
@@ -195,29 +218,30 @@ const lastLineNumber = stanzas.flat().length - 1
 
 // Hooks/logic
 
-const options = {
-  threshold: [
-    0.0667,
-    0.1334,
-    0.2001,
-    0.2668,
-    0.33349999999999996,
-    0.4002,
-    0.4669,
-    0.5336,
-    0.6003,
-    0.6669999999999999,
-    0.7336999999999999,
-    0.8004,
-    0.8671,
-    0.9338,
-  ],
-}
-
 function useCurrentLineNumber() {
   const [currentLineNumber, setCurrentLineNumber] = useState(-1)
   useEffect(() => {
     const scrollBox = document.querySelector('#scrollBox')
+
+    const options = {
+      root: document.querySelector('#scrollRoot'),
+      threshold: [
+        0.0667,
+        0.1334,
+        0.2001,
+        0.2668,
+        0.33349999999999996,
+        0.4002,
+        0.4669,
+        0.5336,
+        0.6003,
+        0.6669999999999999,
+        0.7336999999999999,
+        0.8004,
+        0.8671,
+        0.9338,
+      ],
+    }
 
     const observer = new IntersectionObserver(handleIntersect, options)
     observer.observe(scrollBox)

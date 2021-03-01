@@ -5,8 +5,6 @@ import Document, {
   NextScript,
   DocumentContext,
 } from 'next/document'
-import Image from 'next/image'
-import tw from 'twin.macro'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -34,17 +32,6 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
-          <div tw="fixed h-screen w-screen overflow-hidden">
-            <Image
-              src="/Pink_Line_Dusty.jpg"
-              alt="Pine forest with pink ribbon."
-              layout="fill"
-              objectFit="cover"
-              quality={100}
-              loading="eager"
-              priority={false}
-            />
-          </div>
           <Main />
           <NextScript />
         </body>
