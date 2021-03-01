@@ -1,15 +1,3 @@
-body {
-  background-image: url("Pink_Line_Dusty.jpg");
-  background-repeat: no-repeat;
-
-  /* Center and scale the image nicely */
-  background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-  background-size: cover;
-  min-height: 100vh;
-}
-
 /* @font-face and Proza Libre's woff2 files generated from https://google-webfonts-helper.herokuapp.com/fonts */
 /* Proza Libre is not a variable font */
 
