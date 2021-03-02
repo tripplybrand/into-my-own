@@ -1,20 +1,19 @@
 import tw, { css } from 'twin.macro'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
 
 export default function Home() {
-  const currentLineNumber = useCurrentLineNumber()
+  const scrollBoxRef = useRef(null)
+  const currentLineNumber = useCurrentLineNumber(scrollBoxRef)
+
   return (
     <>
       <Head>
         <title>Into My Own</title>
       </Head>
-      <div
-        id="textContainer"
-        tw="flex justify-center my-0 mx-auto min-h-screen sticky top-0"
-      >
+      <div tw="flex justify-center my-0 mx-auto min-h-screen sticky top-0">
         <div tw="py-16 whitespace-nowrap">
           <h1
             css={[
@@ -74,7 +73,7 @@ export default function Home() {
         </div>
       </div>
       <div
-        id="scrollBox"
+        ref={scrollBoxRef}
         tw="min-h-screen bg-gray-300 invisible top-16 w-screen h-screen"
       >
         <p>{null}</p>
@@ -111,7 +110,6 @@ function Line({ children, animationEvent, lastLine }) {
 
   return (
     <span
-      className="appear"
       css={[
         tw`font-body block font-normal opacity-0 text-xs sm:text-sm md:text-xl lg:text-xl`,
         css`
@@ -188,10 +186,11 @@ const lastLineNumber = stanzas.flat().length - 1
 
 // Hooks/logic
 
-function useCurrentLineNumber() {
+function useCurrentLineNumber(scrollBoxRef) {
   const [currentLineNumber, setCurrentLineNumber] = useState(-1)
   useEffect(() => {
-    const scrollBox = document.querySelector('#scrollBox')
+    const scrollBox = scrollBoxRef.current
+    if (scrollBox === null) return
 
     const options = {
       threshold: [
