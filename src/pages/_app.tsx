@@ -26,7 +26,6 @@ function App({ Component, pageProps }: AppProps & ComponentWithPageLayout) {
           alt="Pine forest with pink ribbon."
           layout="fill"
           objectFit="cover"
-          quality={100}
           loading="eager"
           priority={false}
         />
