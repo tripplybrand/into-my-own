@@ -13,27 +13,9 @@ export default function Home() {
       </Head>
       <div
         id="textContainer"
-        css={[
-          tw`flex justify-center min-h-screen my-0 mx-auto`,
-          css`
-            height: 100vh;
-          `,
-        ]}
+        tw="flex justify-center my-0 mx-auto min-h-screen sticky top-0"
       >
-        <div
-          css={[
-            tw`fixed top-16 left-2/4 whitespace-nowrap h-screen`,
-
-            //When poem is revealed switched to absolute?
-            // currentLineNumber === 13 ?
-            //   css`position: absolute; top: 108%; left: 50%; height: h-screen; white-space: nowrap;` :
-            //   css`position: fixed; top: 8%; left: 50%; height: h-screen; white-space: nowrap;`,
-
-            css`
-              transform: translate(-50%);
-            `,
-          ]}
-        >
+        <div tw="py-16">
           <h1
             css={[
               tw`font-body font-bold`,
@@ -45,14 +27,14 @@ export default function Home() {
           >
             Into My Own
           </h1>
-          {stanzas.map((lines, stansaIdx) => {
-            const previousStanzas = stanzas.slice(0, stansaIdx)
+          {stanzas.map((lines, stanzaIdx) => {
+            const previousStanzas = stanzas.slice(0, stanzaIdx)
             const previousLineNum = previousStanzas.reduce(
               (totalLines, linesInStanza) => totalLines + linesInStanza.length,
               0
             )
             return (
-              <Paragraph key={stansaIdx}>
+              <Paragraph key={stanzaIdx}>
                 {lines.map((line, lineIdx) => {
                   const lineNumber = previousLineNum + lineIdx
                   // events: 'SCROLL_ON' | 'SCROLL_PAST' | 'SCROLL_BEFORE'
@@ -75,7 +57,7 @@ export default function Home() {
                   )
                 })}
                 {/* add the attribution to the end of the last stanza */}
-                {stansaIdx === stanzas.length - 1 ? (
+                {stanzaIdx === stanzas.length - 1 ? (
                   <Attribution
                     animationEvent={
                       currentLineNumber === lastLineNumber
@@ -93,12 +75,7 @@ export default function Home() {
       </div>
       <div
         id="scrollBox"
-        css={[
-          tw`min-h-screen bg-gray-300 bg-opacity-0 top-16 w-1/2`,
-          css`
-            height: 100vh;
-          `,
-        ]}
+        tw="min-h-screen bg-gray-300 invisible top-16 w-screen h-screen"
       >
         <p>{null}</p>
       </div>

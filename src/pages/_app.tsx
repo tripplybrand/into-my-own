@@ -16,10 +16,9 @@ function App({ Component, pageProps }: AppProps & ComponentWithPageLayout) {
       <div
         css={[
           css`
-            height: 100vh;
             z-index: -1;
           `,
-          tw`fixed w-screen overflow-hidden`,
+          tw`fixed w-screen overflow-hidden h-screen`,
         ]}
       >
         <Image
