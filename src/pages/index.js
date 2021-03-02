@@ -15,13 +15,12 @@ export default function Home() {
         id="textContainer"
         tw="flex justify-center my-0 mx-auto min-h-screen sticky top-0"
       >
-        <div tw="py-16">
+        <div tw="py-16 whitespace-nowrap">
           <h1
             css={[
-              tw`font-body font-bold`,
+              tw`font-body font-bold text-2xl sm:text-2xl md:text-4xl lg:text-4xl`,
               css`
                 animation: from-on-to-past 3s forwards ease-out;
-                font-size: 2.5rem;
               `,
             ]}
           >
@@ -113,10 +112,9 @@ function Line({ children, animationEvent, lastLine }) {
     <span
       className="appear"
       css={[
-        tw`font-body block font-normal opacity-0`,
+        tw`font-body block font-normal opacity-0 text-xs sm:text-sm md:text-xl lg:text-xl`,
         css`
           animation: ${state.context.animation};
-          font-size: 1.2rem;
           color: #ff90d6;
         `,
       ]}
@@ -146,10 +144,9 @@ function Attribution({ children, animationEvent }) {
     <span
       id="attribution"
       css={[
-        tw`font-body block font-normal text-right opacity-0`,
+        tw`font-body block font-normal text-right opacity-0 text-xs sm:text-xs md:text-base lg:text-base`,
         css`
           animation: ${state.context.animation};
-          font-size: 0.9rem;
           color: #ff90d6;
         `,
       ]}
