@@ -6,7 +6,6 @@ import { useMachine } from '@xstate/react'
 
 export default function Home() {
   const currentLineNumber = useCurrentLineNumber()
-
   return (
     <>
       <Head>
@@ -24,6 +23,12 @@ export default function Home() {
         <div
           css={[
             tw`fixed top-16 left-2/4 whitespace-nowrap h-screen`,
+
+            //When poem is revealed switched to absolute?
+            // currentLineNumber === 13 ?
+            //   css`position: absolute; top: 108%; left: 50%; height: h-screen; white-space: nowrap;` :
+            //   css`position: fixed; top: 8%; left: 50%; height: h-screen; white-space: nowrap;`,
+
             css`
               transform: translate(-50%);
             `,
@@ -87,25 +92,15 @@ export default function Home() {
         </div>
       </div>
       <div
-        id="scrollRoot"
+        id="scrollBox"
         css={[
-          tw`min-h-screen bg-red-300`,
+          tw`min-h-screen bg-gray-300 bg-opacity-0 top-16 w-1/2`,
           css`
-            height: 150vh;
+            height: 100vh;
           `,
         ]}
       >
-        <div
-          id="scrollBox"
-          css={[
-            tw`min-h-screen bg-gray-300 bg-opacity-100 top-16 w-1/2`,
-            css`
-              height: 100vh;
-            `,
-          ]}
-        >
-          <p>{null}</p>
-        </div>
+        <p>{null}</p>
       </div>
     </>
   )
@@ -224,7 +219,6 @@ function useCurrentLineNumber() {
     const scrollBox = document.querySelector('#scrollBox')
 
     const options = {
-      root: document.querySelector('#scrollRoot'),
       threshold: [
         0.0667,
         0.1334,
