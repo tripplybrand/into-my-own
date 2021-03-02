@@ -21,6 +21,7 @@ export default function Home() {
               tw`font-body font-bold text-2xl sm:text-2xl md:text-4xl lg:text-4xl`,
               css`
                 animation: from-on-to-past 3s forwards ease-out;
+                color: #ff90d6;
               `,
             ]}
           >
