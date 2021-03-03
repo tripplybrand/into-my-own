@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
 
+const scrollMultiplier = 1
+
 export default function Home() {
   const currentLineNumber = useCurrentLineNumber()
 
@@ -71,7 +73,14 @@ export default function Home() {
           })}
         </div>
       </div>
-      <div tw="min-h-screen bg-gray-300 invisible top-16 w-screen h-screen">
+      <div
+        css={[
+          tw`min-h-screen bg-gray-300 invisible top-16 w-screen`,
+          css`
+            height: ${100 * scrollMultiplier}vh;
+          `,
+        ]}
+      >
         <p>{null}</p>
       </div>
     </>
@@ -211,7 +220,8 @@ function useCurrentLineNumber() {
 
     window.addEventListener('scroll', handleScroll)
 
-    const currentRatio = currentScrollY / window.innerHeight
+    const currentRatio =
+      currentScrollY / (window.innerHeight * scrollMultiplier)
     const thresholdIdx = options.threshold.findIndex(
       (threshold) => currentRatio <= threshold
     )
