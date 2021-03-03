@@ -184,7 +184,7 @@ const lastLineNumber = stanzas.flat().length - 1
 
 function useCurrentLineNumber() {
   const [currentLineNumber, setCurrentLineNumber] = useState(-1)
-  const [currentScrollY, setCurrentScrollY] = useState()
+  const [currentScrollY, setCurrentScrollY] = useState(-1)
   useEffect(() => {
     const options = {
       threshold: [
