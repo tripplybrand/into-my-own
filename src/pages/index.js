@@ -1,12 +1,11 @@
 import tw, { css } from 'twin.macro'
 import Head from 'next/head'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
 
 export default function Home() {
-  const scrollBoxRef = useRef(null)
-  const currentLineNumber = useCurrentLineNumber(scrollBoxRef)
+  const currentLineNumber = useCurrentLineNumber()
 
   return (
     <>
@@ -72,10 +71,7 @@ export default function Home() {
           })}
         </div>
       </div>
-      <div
-        ref={scrollBoxRef}
-        tw="min-h-screen bg-gray-300 invisible top-16 w-screen h-screen"
-      >
+      <div tw="min-h-screen bg-gray-300 invisible top-16 w-screen h-screen">
         <p>{null}</p>
       </div>
     </>
@@ -186,12 +182,10 @@ const lastLineNumber = stanzas.flat().length - 1
 
 // Hooks/logic
 
-function useCurrentLineNumber(scrollBoxRef) {
+function useCurrentLineNumber() {
   const [currentLineNumber, setCurrentLineNumber] = useState(-1)
+  const [currentScrollY, setCurrentScrollY] = useState()
   useEffect(() => {
-    const scrollBox = scrollBoxRef.current
-    if (scrollBox === null) return
-
     const options = {
       threshold: [
         0.0667,
@@ -211,21 +205,24 @@ function useCurrentLineNumber(scrollBoxRef) {
       ],
     }
 
-    const observer = new IntersectionObserver(handleIntersect, options)
-    observer.observe(scrollBox)
-
-    function handleIntersect(entry, observer) {
-      const currentRatio = entry[0].intersectionRatio
-
-      const thresholdIdx = options.threshold.findIndex(
-        (threshold) => currentRatio <= threshold
-      )
-      const currentLineNumber =
-        thresholdIdx === -1 ? lastLineNumber : thresholdIdx - 1
-
-      setCurrentLineNumber(currentLineNumber)
+    const handleScroll = (e) => {
+      setCurrentScrollY(window.scrollY)
     }
-  }, [])
+
+    window.addEventListener('scroll', handleScroll)
+
+    const currentRatio = currentScrollY / window.innerHeight
+    const thresholdIdx = options.threshold.findIndex(
+      (threshold) => currentRatio <= threshold
+    )
+    const currentLineNumber =
+      thresholdIdx === -1 ? lastLineNumber : thresholdIdx - 1
+    setCurrentLineNumber(currentLineNumber)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [currentScrollY])
 
   return currentLineNumber
 }
