@@ -5,6 +5,22 @@ import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
 
 const scrollMultiplier = 1
+const threshold = [
+  0.0667,
+  0.1334,
+  0.2001,
+  0.2668,
+  0.33349999999999996,
+  0.4002,
+  0.4669,
+  0.5336,
+  0.6003,
+  0.6669999999999999,
+  0.7336999999999999,
+  0.8004,
+  0.8671,
+  0.9338,
+]
 
 export default function Home() {
   const currentLineNumber = useCurrentLineNumber()
@@ -18,7 +34,7 @@ export default function Home() {
         <div tw="py-16 whitespace-nowrap">
           <h1
             css={[
-              tw`font-body font-bold text-2xl sm:text-2xl md:text-4xl lg:text-4xl`,
+              tw`text-2xl font-bold font-body sm:text-2xl md:text-4xl lg:text-4xl`,
               css`
                 animation: from-on-to-past 3s forwards ease-out;
                 color: #ff90d6;
@@ -75,7 +91,7 @@ export default function Home() {
       </div>
       <div
         css={[
-          tw`min-h-screen bg-gray-300 invisible top-16 w-screen`,
+          tw`invisible w-screen min-h-screen bg-gray-300 top-16`,
           css`
             height: ${100 * scrollMultiplier}vh;
           `,
@@ -116,7 +132,7 @@ function Line({ children, animationEvent, lastLine }) {
   return (
     <span
       css={[
-        tw`font-body block font-normal opacity-0 text-xs sm:text-sm md:text-xl lg:text-xl`,
+        tw`block text-xs font-normal opacity-0 font-body sm:text-sm md:text-xl lg:text-xl`,
         css`
           animation: ${state.context.animation};
           color: #ff90d6;
@@ -148,7 +164,7 @@ function Attribution({ children, animationEvent }) {
     <span
       id="attribution"
       css={[
-        tw`font-body block font-normal text-right opacity-0 text-xs sm:text-xs md:text-base lg:text-base`,
+        tw`block text-xs font-normal text-right opacity-0 font-body sm:text-xs md:text-base lg:text-base`,
         css`
           animation: ${state.context.animation};
           color: #ff90d6;
@@ -193,46 +209,26 @@ const lastLineNumber = stanzas.flat().length - 1
 
 function useCurrentLineNumber() {
   const [currentLineNumber, setCurrentLineNumber] = useState(-1)
-  const [currentScrollY, setCurrentScrollY] = useState(-1)
-  useEffect(() => {
-    const options = {
-      threshold: [
-        0.0667,
-        0.1334,
-        0.2001,
-        0.2668,
-        0.33349999999999996,
-        0.4002,
-        0.4669,
-        0.5336,
-        0.6003,
-        0.6669999999999999,
-        0.7336999999999999,
-        0.8004,
-        0.8671,
-        0.9338,
-      ],
-    }
 
+  useEffect(() => {
     const handleScroll = (e) => {
-      setCurrentScrollY(window.scrollY)
+      const { scrollY, innerHeight } = window
+
+      const currentRatio = scrollY / (innerHeight * scrollMultiplier)
+      const thresholdIdx = threshold.findIndex(
+        (threshold) => currentRatio <= threshold
+      )
+      const currentLineNumber =
+        thresholdIdx === -1 ? lastLineNumber : thresholdIdx - 1
+      setCurrentLineNumber(currentLineNumber)
     }
 
     window.addEventListener('scroll', handleScroll)
 
-    const currentRatio =
-      currentScrollY / (window.innerHeight * scrollMultiplier)
-    const thresholdIdx = options.threshold.findIndex(
-      (threshold) => currentRatio <= threshold
-    )
-    const currentLineNumber =
-      thresholdIdx === -1 ? lastLineNumber : thresholdIdx - 1
-    setCurrentLineNumber(currentLineNumber)
-
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [currentScrollY])
+  }, [])
 
   return currentLineNumber
 }
