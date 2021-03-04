@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
 
-const scrollMultiplier = 1
-const threshold = [
+//Increase multiplier make more scroll length between the reveal of each line
+const scrollMultiplier = 5
+const thresholds = [
   0.0667,
   0.1334,
   0.2001,
@@ -215,7 +216,7 @@ function useCurrentLineNumber() {
       const { scrollY, innerHeight } = window
 
       const currentRatio = scrollY / (innerHeight * scrollMultiplier)
-      const thresholdIdx = threshold.findIndex(
+      const thresholdIdx = thresholds.findIndex(
         (threshold) => currentRatio <= threshold
       )
       const currentLineNumber =
