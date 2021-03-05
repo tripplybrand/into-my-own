@@ -10,7 +10,7 @@
     "test": "jest --watch",
     "analyze": "cross-env ANALYZE=true npm run build",
     "remotion": "remotion preview video/index.tsx",
-    "remotion:build": "remotion render video/index.tsx HelloWorld out.mp4"
+    "remotion:build": "remotion render video/index.tsx into-my-own video/into-my-own.mp4"
   },
   "husky": {
     "hooks": {

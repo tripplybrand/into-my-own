@@ -115,7 +115,7 @@ function Header({ children }: { children: React.ReactNode }) {
 function Paragraph({
   children,
 }: {
-  key?: string | number
+  key?: React.Key
   children: React.ReactNode
 }) {
   return <p tw="my-4">{children}</p>
