@@ -9,7 +9,7 @@ const fadeInDuration = 30
 const colorChangeDuration = 30
 const colorInterpolation = interpolateRgb('#ff90d6', '#f5faff')
 
-export function HelloWorld() {
+export default function IntoMyOwn() {
   return (
     <>
       <BackgroundImage />
@@ -45,7 +45,7 @@ function BackgroundImage() {
   )
 }
 
-export default function Poem() {
+function Poem() {
   return (
     <div tw="flex justify-center my-0 mx-auto min-h-screen sticky top-0">
       <div tw="py-16 whitespace-nowrap">
