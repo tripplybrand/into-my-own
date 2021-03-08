@@ -9,7 +9,7 @@ export default function RemotionVideo() {
       <Composition
         id="into-my-own"
         component={IntoMyOwn}
-        durationInFrames={17 * 30} // This could probably be more data driven, but whatever
+        durationInFrames={18 * 30} // This could probably be more data driven, but whatever
         fps={30}
         width={1920}
         height={1080}

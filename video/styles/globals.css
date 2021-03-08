@@ -6,14 +6,12 @@
   font-family: 'Proza Libre';
   font-style: normal;
   font-weight: 400;
-  src: local(''),
-       url('../../public/fonts/Proza_Libre/proza-libre-v5-latin-regular.woff2') format('woff2');
+  src: url('../../public/fonts/Proza_Libre/proza-libre-v5-latin-regular.woff2') format('woff2');
 }
 /* proza-libre-700 - latin */
 @font-face {
   font-family: 'Proza Libre';
   font-style: normal;
   font-weight: 700;
-  src: local(''),
-       url('../../public/fonts/Proza_Libre/proza-libre-v5-latin-700.woff2') format('woff2');
+  src: url('../../public/fonts/Proza_Libre/proza-libre-v5-latin-700.woff2') format('woff2');
 }

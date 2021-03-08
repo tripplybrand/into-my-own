@@ -77,9 +77,11 @@ function Poem() {
                 stanzaIdx === stanzas.length - 1
                   ? (() => {
                       const startFade = fadeInDuration * (lastLineNumber + 2)
+                      const endFade = startFade + fadeInDuration
                       return (
                         <Attribution
-                          fadeInFrames={[startFade, startFade + fadeInDuration]}
+                          fadeInFrames={[startFade, endFade]}
+                          colorFrames={[endFade, endFade + colorChangeDuration]}
                         >
                           — Robert Frost
                         </Attribution>
@@ -112,6 +114,7 @@ function Header({ children }: { children: React.ReactNode }) {
     </h1>
   )
 }
+
 function Paragraph({
   children,
 }: {
@@ -148,10 +151,12 @@ function Line({ fadeInFrames, colorFrames, children }: LineProps) {
 
 type AttributionType = {
   fadeInFrames: [number, number]
+  colorFrames: [number, number]
   children: React.ReactNode
 }
-function Attribution({ fadeInFrames, children }: AttributionType) {
+function Attribution({ fadeInFrames, colorFrames, children }: AttributionType) {
   const opacity = useOpacity(fadeInFrames)
+  const color = useColor(colorFrames)
   return (
     <span
       id="attribution"
@@ -159,7 +164,7 @@ function Attribution({ fadeInFrames, children }: AttributionType) {
         tw`block text-xs font-normal text-right opacity-0 font-body sm:text-xs md:text-base lg:text-base`,
         css`
           opacity: ${opacity};
-          color: ${colorInterpolation(0)};
+          color: ${color};
         `,
       ]}
     >
