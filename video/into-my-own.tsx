@@ -6,7 +6,7 @@ import { interpolateRgb } from 'd3-interpolate'
 import img from '../public/Pink_Line_Dusty.jpg'
 
 const fadeInDuration = 30
-const colorChangeDuration = 30
+const colorChangeDuration = 45
 const colorInterpolation = interpolateRgb('#ff90d6', '#f5faff')
 
 export default function IntoMyOwn() {
@@ -60,7 +60,8 @@ function Poem() {
             <Paragraph key={stanzaIdx}>
               {lines.map((line, lineIdx) => {
                 const lineNumber = previousLineNum + lineIdx
-                const startFade = fadeInDuration * (lineNumber + 1)
+                const startFade =
+                  (fadeInDuration + colorChangeDuration) * (lineNumber + 1)
                 const endFade = startFade + fadeInDuration
                 return (
                   <Line
@@ -76,7 +77,9 @@ function Poem() {
                 // add the attribution to the end of the last stanza
                 stanzaIdx === stanzas.length - 1
                   ? (() => {
-                      const startFade = fadeInDuration * (lastLineNumber + 2)
+                      const startFade =
+                        (fadeInDuration + colorChangeDuration) *
+                        (lastLineNumber + 2)
                       const endFade = startFade + fadeInDuration
                       return (
                         <Attribution
@@ -121,7 +124,7 @@ function Paragraph({
   key?: React.Key
   children: React.ReactNode
 }) {
-  return <p tw="my-4">{children}</p>
+  return <p tw="my-12">{children}</p>
 }
 
 type LineProps = {
